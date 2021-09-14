@@ -20,52 +20,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 
-public class DataService implements ApplicationListener<BrokerAvailabilityEvent> {
-    private SimpMessagingTemplate template;
+public class DataService{
 
     private static Log logger = LogFactory.getLog(DataService.class);
 
-    private final MessageSendingOperations<String> messagingTemplate;
-
-//    private final GeneratorData generatorData = new GeneratorData();
-
-    private AtomicBoolean brokerAvailable = new AtomicBoolean();
-
-    public DataService(MessageSendingOperations<String> messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
-    }
-
-    @Override
-    public void onApplicationEvent(BrokerAvailabilityEvent brokerAvailabilityEvent) {
-
-    }
-
-//    @Scheduled(fixedDelay=2000)
-//    public void sendData() throws InterruptedException {
-//        for (JsonNode data : this.generatorData.getRandomLoansData()) {
-//            System.out.println("I am working here");
-//            System.out.println(data);
-//            this.messagingTemplate.convertAndSend("/topic/loans" +  data);
-////            if (logger.isTraceEnabled()) {
-////                logger.trace("Sending quote " + data);
-////            }
-//            System.out.println(this.brokerAvailable.get());
-////            if (this.brokerAvailable.get()) {
-////                this.messagingTemplate.convertAndSend("/topic/loans" +  data);
-////            }
-//        }
-//    }
-
-
-//
-//    private static class GeneratorData {
-        ObjectMapper mapper = new ObjectMapper();
-        @Scheduled(fixedDelay=2000)
         public ArrayNode getRandomLoansData() throws InterruptedException {
+            ObjectMapper mapper = new ObjectMapper();
             Faker faker = new Faker(new Locale("en-AU"));
-            ArrayNode loans = mapper.createArrayNode();
-            for (int i = 0; i < 20; i++) {
-                loans.add(mapper.createObjectNode()
+            ArrayNode loan = mapper.createArrayNode();
+            for (int i = 0; i < 20000; i++) {
+                loan.add(mapper.createObjectNode()
                         .put("riskDesk" , faker.commerce().department())
                         .put("asset" , faker.commerce().productName())
                         .put("account" , faker.letterify("07200??89"))
@@ -79,9 +43,7 @@ public class DataService implements ApplicationListener<BrokerAvailabilityEvent>
                         .put("kappa" , faker.commerce().price())
                         .put("purpose", faker.commerce().material()));
             }
-            return loans;
-
-//        }
+            return loan;
 
     }
 

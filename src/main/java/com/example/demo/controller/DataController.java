@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -26,7 +28,7 @@ public class DataController {
 
     private SimpMessagingTemplate template;
 
-    @GetMapping("/loans")
+    @GetMapping("/loan")
     public JsonNode getAllLoans() throws InterruptedException {
         return dataService.getRandomLoansData();
     }
@@ -43,19 +45,17 @@ public DataController(SimpMessagingTemplate template) {
     }
 
     @RequestMapping(value="/loans", method=POST)
-    @Scheduled(fixedDelay=2000)
+    @Scheduled(fixedDelay=4000)
     public void sendData() throws InterruptedException {
-        for (JsonNode data : dataService.getRandomLoansData()) {
             System.out.println("I am working here");
-            System.out.println(data);
-            this.template.convertAndSend("/topic/loans" +  data);
-        }
+            System.out.println( dataService.getRandomLoansData());
+            template.setDefaultDestination("/topic/loans");
+            this.template.convertAndSend(dataService.getRandomLoansData());
     }
 
     @MessageMapping("/livedata")
     @SendTo("/topic/loans")
     public ArrayNode getAllLoan() throws InterruptedException {
-
         Thread.sleep(100); // simulated delay
         return  dataService.getRandomLoansData();
     }
