@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DataService{
 
     private static Log logger = LogFactory.getLog(DataService.class);
-
+    @Scheduled(fixedDelay=4000)
         public ArrayNode getRandomLoansData() throws InterruptedException {
             ObjectMapper mapper = new ObjectMapper();
             Faker faker = new Faker(new Locale("en-AU"));
@@ -43,6 +43,7 @@ public class DataService{
                         .put("kappa" , faker.commerce().price())
                         .put("purpose", faker.commerce().material()));
             }
+          //  System.out.println(loan);
             return loan;
 
     }
